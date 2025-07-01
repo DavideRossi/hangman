@@ -43,12 +43,25 @@ class Hangman:
         game.play()
 
     def show_dictionary_paginated(self, page_size=20):
-        #TODO fill me
-        pass
+        words = self.dictionary.words
+        total_words = len(words)
+        for i in range(0, total_words, page_size):
+            page = words[i:i + page_size]
+            print("\n".join(page))
+            print(f"\nPage {i // page_size + 1} of {total_words // page_size + 1}")
+            if i + page_size < total_words:
+                if input("'q' to quit, Enter to continue to the next page...").strip().lower() == 'q':
+                    return
+        print("End of dictionary.")
 
     def add_word_to_dictionary(self):
-        #TODO fill me
-        pass
+        word = input("Enter a word to add to the dictionary: ").strip()
+        if word:
+            self.dictionary.add(word)
+            self.dictionary.sync()
+            print(f"Word '{word}' added to the dictionary.")
+        else:
+            print("No word entered.")
 
     def remove_word_from_dictionary(self):
         word = input("Enter a word to remove from the dictionary: ").strip()

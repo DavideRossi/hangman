@@ -63,11 +63,36 @@ public:
     }
 
     void show_dictionary_paginated(int page_size = 20) {
-        //TODO fill me
+        const std::vector<std::string>& words = dictionary.get_words();
+        int total_words = words.size();
+        for (int i = 0; i < total_words; i += page_size) {
+            for (int j = i; j < i + page_size && j < total_words; ++j) {
+                std::cout << words[j] << "\n";
+            }
+            std::cout << "\nPage " << (i / page_size + 1) << " of " << ((total_words - 1) / page_size + 1) << "\n";
+            if (i + page_size < total_words) {
+                std::cout << "'q' to quit, Enter to continue to the next page...";
+                std::string input;
+                std::getline(std::cin, input);
+                if (!input.empty() && (input == "q" || input == "Q")) {
+                    return;
+                }
+            }
+        }
+        std::cout << "End of dictionary.\n";
     }
 
     void add_word_to_dictionary() {
-        //TODO fill me
+        std::cout << "Enter a word to add to the dictionary: ";
+        std::string word;
+        std::getline(std::cin, word);
+        if (!word.empty()) {
+            dictionary.add(word);
+            dictionary.sync();
+            std::cout << "Word '" << word << "' added to the dictionary.\n";
+        } else {
+            std::cout << "No word entered.\n";
+        }
     }
 
     void remove_word_from_dictionary() {

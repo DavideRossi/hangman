@@ -19,13 +19,32 @@ public class Game {
     }
 
     public boolean guess(char letter) {
-        //TODO fill me
-        return false;
+        letter = Character.toLowerCase(letter);
+        this.guessedLetters.add(letter);
+        if (this.targetWord.indexOf(letter) >= 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public String grid() {
-        //TODO fill me
-        return null;
+        StringBuilder result = new StringBuilder();
+        String vowels = "aeiou";
+        for (char c : this.targetWord.toCharArray()) {
+            if (this.guessedLetters.contains(c)) {
+                result.append(Character.toUpperCase(c));
+            } else if (vowels.indexOf(c) != -1) {
+                result.append('+');
+            } else if (Character.isAlphabetic(c)) {
+                result.append('-');
+            } else {
+                result.append(c);
+            }
+            result.append(' ');
+        }
+        result.append("/ errors left: ").append(this.remainingErrors);
+        return result.toString().trim();
     }
 
     public char readGuess(Scanner scanner) {
@@ -48,6 +67,26 @@ public class Game {
     }
 
     public void play(Scanner scanner) {
-        //TODO fill me
+        while (this.remainingErrors > 0) {
+            System.out.println(grid());
+            char guess = readGuess(scanner);
+            if(guess(guess)) {
+                boolean allGuessed = true;
+                for (char c : this.targetWord.toCharArray()) {
+                    if (Character.isLetter(c) && !this.guessedLetters.contains(c)) {
+                        allGuessed = false;
+                        break;
+                    }
+                }
+                if (allGuessed) {
+                    System.out.println("Congratulations! You've guessed the word: " + this.targetWord.toUpperCase());
+                    return;
+                }
+            } else {
+                this.remainingErrors--;
+                System.out.println("Wrong guess! You have " + this.remainingErrors + " errors left.");
+            }
+        }
+        System.out.println("Game over! The word was: " + this.targetWord.toUpperCase());
     }
 }

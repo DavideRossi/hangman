@@ -70,11 +70,36 @@ public class Hangman {
     }
 
     public void showDictionaryPaginated(int pageSize) {
-        //TODO fill me
+        List<String> words = this.dictionary.getWords();
+        int totalWords = words.size();
+        int totalPages = (totalWords + pageSize - 1) / pageSize;
+        for (int i = 0; i < totalWords; i += pageSize) {
+            int end = Math.min(i + pageSize, totalWords);
+            for (int j = i; j < end; j++) {
+                System.out.println(words.get(j));
+            }
+            System.out.println("\nPage " + ((i / pageSize) + 1) + " of " + totalPages);
+            if (end < totalWords) {
+                System.out.print("'q' to quit, Enter to continue to the next page...");
+                String input = this.scanner.nextLine().trim().toLowerCase();
+                if ("q".equals(input)) {
+                    return;
+                }
+            }
+        }
+        System.out.println("End of dictionary.");
     }
 
     public void addWordToDictionary() throws IOException {
-        //TODO fill me
+        System.out.print("Enter a word to add to the dictionary: ");
+        String word = this.scanner.nextLine().trim();
+        if (!word.isEmpty()) {
+            this.dictionary.add(word);
+            this.dictionary.sync();
+            System.out.println("Word '" + word + "' added to the dictionary.");
+        } else {
+            System.out.println("No word entered.");
+        }
     }
 
     public void removeWordFromDictionary() throws IOException {

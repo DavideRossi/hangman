@@ -24,11 +24,32 @@ public:
     }
 
     bool guess(char letter) {
-        //TODO fill me
+        letter = toLower(letter);
+        guessedLetters.insert(letter);
+        if (targetWord.find(letter) != std::string::npos) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     std::string grid() const {
-        //TODO fill me
+        std::string result;
+        std::string vowels = "aeiou";
+        for (char c : targetWord) {
+            if (guessedLetters.count(c)) {
+                result += std::toupper(static_cast<unsigned char>(c));
+            } else if (vowels.find(c) != std::string::npos) {
+                result += '+';
+            } else if (std::isalpha(static_cast<unsigned char>(c))) {
+                result += '-';
+            } else {
+                result += c;
+            }
+            result += ' ';
+        }
+        result += "/ errors left: " + std::to_string(remainingErrors);
+        return result;
     }
 
     char readGuess() {
@@ -52,7 +73,31 @@ public:
     }
 
     void play() {
-        //TODO fill me
+        while (remainingErrors > 0) {
+            std::cout << grid() << std::endl;
+            char g = readGuess();
+            if (guess(g)) {
+                bool allGuessed = true;
+                for (char c : targetWord) {
+                    if (std::isalpha(static_cast<unsigned char>(c)) && !guessedLetters.count(c)) {
+                        allGuessed = false;
+                        break;
+                    }
+                }
+                if (allGuessed) {
+                    std::cout << "Congratulations! You've guessed the word: ";
+                    for (char c : targetWord) std::cout << (char)std::toupper(static_cast<unsigned char>(c));
+                    std::cout << std::endl;
+                    return;
+                }
+            } else {
+                --remainingErrors;
+                std::cout << "Wrong guess! You have " << remainingErrors << " errors left." << std::endl;
+            }
+        }
+        std::cout << "Game over! The word was: ";
+        for (char c : targetWord) std::cout << (char)std::toupper(static_cast<unsigned char>(c));
+        std::cout << std::endl;
     }
 };
 
